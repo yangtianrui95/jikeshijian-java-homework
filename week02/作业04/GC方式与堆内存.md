@@ -1,5 +1,18 @@
+## GC 日志
+
 
 ## wrk 压测gateway-server.jar
+
+### 汇总
+压测环境：CentOS7 4核 8G内存虚拟机
+
+
+| GC方式| 启动命令 |P90延时 | QPS |
+|----|----|----|----|
+|G1GC|java -jar -Xmx50m  -XX:+UseG1GC  -XX:+PrintGC  ~/gateway-server-0.0.1-SNAPSHOT.jar |38ms|5666|
+|SerialGC|java -jar -Xmx50m  -XX:+UseSerialGC  -XX:+PrintGC  ~/gateway-server-0.0.1-SNAPSHOT.jar |28ms|5766|
+|ParallelGC|java -jar -Xmx50m  -XX:+UseParallelGC  -XX:+PrintGC  ~/gateway-server-0.0.1-SNAPSHOT.jar | 48ms|4801|
+|CMSGC|java -jar -Xmx50m  -XX:+UseConcMarkSweepGC  -XX:+PrintGC  ~/gateway-server-0.0.1-SNAPSHOT.jar | 25ms| 6743|
 
 ### G1GC
 
@@ -28,7 +41,6 @@ Transfer/sec:    692.68KB
 https://gceasy.io/my-gc-report.jsp?p=c2hhcmVkLzIwMjEvMDkvMjYvLS1zZXJpYWxnYy5sb2ctLTE0LTU2LTU4&channel=WEB
 
 ```java
-
 Running 30s test @ http://192.168.1.53:8088/api/hello
   4 threads and 100 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
