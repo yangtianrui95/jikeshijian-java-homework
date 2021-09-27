@@ -1,5 +1,68 @@
 ## GC 日志
 
+## SerialGC 日志分析
+
+```
+[GC (Allocation Failure) [DefNew: 15162K->1242K(15360K), 0.0058139 secs] 19841K->6895K(49536K), 0.0058382 secs] [Times: user=0.01 sys=0.00, real=0.00 secs]
+```
+
+根据上面的YGC日志，有几个关键信息要看出：
+
+1. 其中 Allocation Failure表示触发GC原因为空间不足。
+2. DefNew表示SerialGC的新生代，这次GC 新生代空间从15162k下降至1242k，耗时5ms。
+3. 整个堆空间从19841k下降至6895k，耗时5ms。
+
+
+```
+[Full GC (Metadata GC Threshold) [Tenured: 5653K->6527K(34176K), 0.0217220 secs] 7483K->6527K(49536K), [Metaspace: 15849K->15849K(16688K)], 0.0217555 secs] [Times: user=0.06 sys=0.00, real=0.02 secs]
+```
+上面是一条SerialGC的Full GC日志
+信息如下：
+1. Tenured老年代从5653K上升到6527K，总共老年代空间为34176k。
+2. 整个堆空间从7483k下降至6537k。
+3. Metaspace 区没有变化。
+
+## ParallelGC 日志格式分析
+
+YGC
+```
+[GC (Allocation Failure) [PSYoungGen: 13196K->384K(14592K)] 31101K->18572K(38912K), 0.0043607 secs] [Times: user=0.02 sys=0.00, real=0.01 secs]
+```
+
+FullGC
+```
+[Full GC (Ergonomics) [PSYoungGen: 2290K->0K(14592K)] [ParOldGen: 23196K->19969K(34304K)] 25486K->19969K(48896K), [Metaspace: 23359K->23321K(24880K)], 0.0670752 secs] [Times: user=0.19 sys=0.01, real=0.07 secs]
+```
+
+ParallelGC和SerialGC格式类似，只不过新生代/老年代名称和SerialGC不同而已。
+
+
+## CMS GC日志格式
+
+CMS在新生代使用的是ParNewGC，所以YGC日志与SerialGC和ParalellGC基本相同
+
+```
+[GC (Allocation Failure) [ParNew: 15103K->1333K(15360K), 0.0035725 secs] 20866K->7836K(49536K), 0.0035963 secs] [Times: user=0.01 sys=0.00, real=0.01 secs]
+```
+
+当触发FullGC时，此时的日志会与其他日志有很大不同
+可以看到如下信息：
+
+```
+[GC (CMS Initial Mark) [1 CMS-initial-mark: 6503K(34176K)] 8234K(49536K), 0.0013258 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+[CMS-concurrent-mark-start]
+[CMS-concurrent-mark: 0.031/0.031 secs] [Times: user=0.12 sys=0.01, real=0.03 secs]
+[CMS-concurrent-preclean-start]
+[CMS-concurrent-preclean: 0.001/0.001 secs] [Times: user=0.01 sys=0.00, real=0.00 secs]
+[CMS-concurrent-abortable-preclean-start]
+[GC (Allocation Failure) [ParNew: 15029K->1157K(15360K), 0.0051178 secs] 21532K->8243K(49536K), 0.0051430 secs] [Times: user=0.02 sys=0.00, real=0.01 secs]
+[CMS-concurrent-abortable-preclean: 0.021/0.108 secs] [Times: user=0.35 sys=0.01, real=0.10 secs]
+[GC (CMS Final Remark) [YG occupancy: 8358 K (15360 K)][Rescan (parallel) , 0.0019976 secs][weak refs processing, 0.0000316 secs][class unloading, 0.0026277 secs][scrub symbol table, 0.0020630 secs][scrub string table, 0.0000961 secs][1 CMS-remark: 7086K(34176K)] 15445K(49536K), 0.0073523 secs] [Times: user=0.02 sys=0.00, real=0.00 secs]
+[CMS-concurrent-sweep-start]
+[CMS-concurrent-sweep: 0.004/0.004 secs] [Times: user=0.02 sys=0.00, real=0.01 secs]
+[CMS-concurrent-reset-start]
+[CMS-concurrent-reset: 0.007/0.007 secs] [Times: user=0.02 sys=0.00, real=0.00 secs]
+```
 
 ## wrk 压测gateway-server.jar
 
