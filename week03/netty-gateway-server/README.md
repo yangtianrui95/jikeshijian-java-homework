@@ -10,7 +10,7 @@ mvn clean package -Dmaven.test.skip=true
 
 运行
 ```java
-java -jar /Users/yangtianrui/github/jikeshijian-java-homework/week03/netty-gateway-server/target/jvm_test-1.0.jar 
+java -jar <你的路径/netty-gateway-server-1.0.jar>
 ```
 
 ## 示例
