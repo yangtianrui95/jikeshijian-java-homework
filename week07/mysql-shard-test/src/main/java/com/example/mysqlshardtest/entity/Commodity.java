@@ -26,6 +26,9 @@ public class Commodity {
     private Long updateTime;
 
     private Integer shopId;
+    public void a() {
+
+    }
 
     public enum Column {
         id("id", "id", "INTEGER", false),

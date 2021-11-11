@@ -19,7 +19,7 @@ import java.sql.*;
 import java.util.Properties;
 
 @Slf4j
-@Transactional(rollbackFor = Exception.class)
+//@Transactional(rollbackFor = Exception.class)
 public class JdbcTemplateInsertTest extends MysqlShardTestApplicationTests {
 
     @Value("${spring.datasource.url}")
@@ -83,7 +83,7 @@ public class JdbcTemplateInsertTest extends MysqlShardTestApplicationTests {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         Connection connection = DataSourceUtils.getConnection(dataSource);
-//        connection.setAutoCommit(false);
+        connection.setAutoCommit(false);
         @Cleanup
         final PreparedStatement preparedStatement =
                 connection.prepareStatement("INSERT INTO t_commodity2 " +
@@ -100,7 +100,7 @@ public class JdbcTemplateInsertTest extends MysqlShardTestApplicationTests {
             preparedStatement.addBatch();
         }
         preparedStatement.executeBatch();
-//        connection.commit();
+        connection.commit();
         stopWatch.stop();
         log.error("cost: {}", stopWatch.getLastTaskTimeMillis());
     }
