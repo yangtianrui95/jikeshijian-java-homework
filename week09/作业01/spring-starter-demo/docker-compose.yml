@@ -1,0 +1,21 @@
+version: '2'
+
+services:
+  spring-rpc-server:
+    container_name: rpc-server
+    build: ./spring-rpc-server
+    image: spring-rpc-server/spring-rpc-server
+    mem_limit: 512M
+    ports:
+      - 8881:8881
+
+  spring-rpc-client:
+    container_name: rpc-client
+    build: ./spring-rpc-demo
+    image: spring-rpc-client/spring-rpc-demo
+    mem_limit: 512M
+    ports:
+      - 8882:8882
+    depends_on:
+      - spring-rpc-server
+#    entrypoint: ["dockerize", "--wait=tcp://spring-rpc-server:9991", "--timeout=60s","--","java", "-Djava.security.egd=file:/dev/./urandom","-jar", "/app.jar"]
